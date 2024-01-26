@@ -9,7 +9,20 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: const CustomAppBar(),
-      body: Container(),
+      body: SizedBox(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Container(
+                height: 450,
+                color: Colors.pink,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
