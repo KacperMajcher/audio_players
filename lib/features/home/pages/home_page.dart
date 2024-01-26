@@ -19,11 +19,11 @@ class _HomePageState extends State<HomePage> {
       body: SizedBox(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              child: Container(
-                height: 450,
-                color: Colors.pink,
+            const SizedBox(height: 60),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              child: Image(
+                image: AssetImage('assets/cover/cover.jpg'),
               ),
             ),
             const SizedBox(height: 20),
