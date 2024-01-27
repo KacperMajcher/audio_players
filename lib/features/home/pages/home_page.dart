@@ -171,6 +171,12 @@ class _HomePageState extends State<HomePage> {
     String asset = 'audio/song.mp3';
     await _audioPlayer.play(AssetSource(asset));
   }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
 }
 
 String formatTime(Duration duration) {
