@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
       body: SizedBox(
         child: Column(
           children: [
-            const SizedBox(height: 60),
+            const SizedBox(height: 45),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               child: Image(
@@ -57,24 +57,43 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Slider(
-                min: 0,
-                max: _duration.inSeconds.toDouble(),
-                value: _position.inSeconds.toDouble(),
-                onChanged: (value) async {},
-                activeColor: Colors.white,
-                inactiveColor: Colors.white.withOpacity(0.3),
-              ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Slider(
+                    min: 0,
+                    max: _duration.inSeconds.toDouble(),
+                    value: _position.inSeconds.toDouble(),
+                    onChanged: (value) async {},
+                    activeColor: Colors.white,
+                    inactiveColor: Colors.white.withOpacity(0.3),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(formatTime(_position),
+                          style: const TextStyle(color: Colors.white)),
+                      Text(
+                          formatTime(_duration -
+                              _position), //reamining time of the song
+                          style: const TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                )
+              ],
             ),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 IconButton(
                   icon: const Icon(
                     Icons.skip_previous_rounded,
-                    size: 40,
+                    size: 50,
                   ),
                   color: Colors.white,
                   onPressed: () {},
@@ -82,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                 IconButton(
                   icon: Icon(
                     isPlaying ? Icons.pause : Icons.play_circle,
-                    size: 50,
+                    size: 60,
                   ),
                   color: Colors.white,
                   onPressed: () async {},
@@ -90,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                 IconButton(
                   icon: const Icon(
                     Icons.skip_next_rounded,
-                    size: 40,
+                    size: 50,
                   ),
                   color: Colors.white,
                   onPressed: () {},
