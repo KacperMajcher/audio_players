@@ -19,6 +19,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
+    setAudio();
+
     //Listen to the states: playing, paused, stopped
     _audioPlayer.onPlayerStateChanged.listen((state) {
       setState(() {
@@ -141,8 +143,7 @@ class _HomePageState extends State<HomePage> {
                     if (_isPlaying) {
                       await _audioPlayer.pause();
                     } else {
-                      String asset = 'audio/song.mp3';
-                      await _audioPlayer.play(AssetSource(asset));
+                      await _audioPlayer.resume();
                     }
                   },
                 ),
@@ -160,6 +161,15 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  Future setAudio() async {
+    //Repeat song when completed
+    _audioPlayer.setReleaseMode(ReleaseMode.loop);
+
+    //load audio
+    String asset = 'audio/song.mp3';
+    await _audioPlayer.play(AssetSource(asset));
   }
 }
 
