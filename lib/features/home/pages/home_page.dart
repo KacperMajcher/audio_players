@@ -1,4 +1,5 @@
 import 'package:audio_players/features/home/widgets/app_bar.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,7 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool isPlaying = false;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  final bool _isPlaying = false;
   final Duration _duration = Duration.zero;
   final Duration _position = Duration.zero;
 
@@ -100,11 +102,18 @@ class _HomePageState extends State<HomePage> {
                 ),
                 IconButton(
                   icon: Icon(
-                    isPlaying ? Icons.pause : Icons.play_circle,
+                    _isPlaying ? Icons.pause : Icons.play_circle,
                     size: 60,
                   ),
                   color: Colors.white,
-                  onPressed: () async {},
+                  onPressed: () async {
+                    if (_isPlaying) {
+                      await _audioPlayer.pause();
+                    } else {
+                      String asset = 'audio/song.mp3';
+                      await _audioPlayer.play(AssetSource(asset));
+                    }
+                  },
                 ),
                 IconButton(
                   icon: const Icon(
