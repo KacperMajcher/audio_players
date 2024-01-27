@@ -10,6 +10,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isPlaying = false;
+  final Duration _duration = Duration.zero;
+  final Duration _position = Duration.zero;
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +60,9 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Slider(
-                value: 0.5,
                 min: 0,
+                max: _duration.inSeconds.toDouble(),
+                value: _position.inSeconds.toDouble(),
                 onChanged: (value) async {},
                 activeColor: Colors.white,
                 inactiveColor: Colors.white.withOpacity(0.3),
