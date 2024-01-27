@@ -11,9 +11,35 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  final bool _isPlaying = false;
-  final Duration _duration = Duration.zero;
-  final Duration _position = Duration.zero;
+  bool _isPlaying = false;
+  Duration _duration = Duration.zero;
+  Duration _position = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+
+    //Listen to the states: playing, paused, stopped
+    _audioPlayer.onPlayerStateChanged.listen((state) {
+      setState(() {
+        _isPlaying = state == PlayerState.playing;
+      });
+    });
+
+    //listen to audio duration
+    _audioPlayer.onDurationChanged.listen((newDuration) {
+      setState(() {
+        _duration = newDuration;
+      });
+    });
+
+    //listen to audio position changes
+    _audioPlayer.onPositionChanged.listen((newPosition) {
+      setState(() {
+        _position = newPosition;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +105,8 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Text(formatTime(_position),
                           style: const TextStyle(color: Colors.white)),
-                      Text(
-                          formatTime(_duration -
-                              _position), //reamining time of the song
+                      Text(formatTime(_duration),
+                          //formatTime(_duration - _position), //reamining time of the song
                           style: const TextStyle(color: Colors.white)),
                     ],
                   ),
