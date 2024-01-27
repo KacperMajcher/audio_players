@@ -93,7 +93,13 @@ class _HomePageState extends State<HomePage> {
                     min: 0,
                     max: _duration.inSeconds.toDouble(),
                     value: _position.inSeconds.toDouble(),
-                    onChanged: (value) async {},
+                    onChanged: (value) async {
+                      final position = Duration(seconds: value.toInt());
+                      await _audioPlayer.seek(position);
+
+                      //optional: play audio if was paused
+                      await _audioPlayer.resume();
+                    },
                     activeColor: Colors.white,
                     inactiveColor: Colors.white.withOpacity(0.3),
                   ),
