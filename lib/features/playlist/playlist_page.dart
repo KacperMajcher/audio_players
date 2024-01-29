@@ -1,5 +1,6 @@
 import 'package:audio_players/features/details/data/model/playlist_provider.dart';
 import 'package:audio_players/features/details/data/model/song.dart';
+import 'package:audio_players/features/details/pages/details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +12,27 @@ class PlaylistPage extends StatefulWidget {
 }
 
 class _PlaylistPageState extends State<PlaylistPage> {
+  //get the playlist provider
+  late final dynamic playlistProvider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    //get playlist provider
+    playlistProvider = Provider.of<PlaylistProvider>(context, listen: false);
+  }
+
+  //go to a song
+  void goToSong(int songIndex) {
+    //update current song index
+    playlistProvider.currentSongIndex = songIndex;
+
+    //navigate to details page
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const DetailsPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,9 +55,11 @@ class _PlaylistPageState extends State<PlaylistPage> {
 
               //return lsit tile UI
               return ListTile(
-                  title: Text(song.songName),
-                  subtitle: Text(song.artistName),
-                  leading: Image.asset(song.albumImagePath));
+                title: Text(song.songName),
+                subtitle: Text(song.artistName),
+                leading: Image.asset(song.albumImagePath),
+                onTap: () => goToSong(index),
+              );
             },
           );
         },
