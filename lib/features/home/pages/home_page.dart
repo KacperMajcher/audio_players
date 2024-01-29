@@ -14,6 +14,10 @@ class _HomePageState extends State<HomePage> {
   bool _isPlaying = false;
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
+  final List<IconData> _icons = [
+    Icons.play_circle,
+    Icons.pause_circle,
+  ];
 
   @override
   void initState() {
@@ -134,10 +138,15 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {},
                 ),
                 IconButton(
-                  icon: Icon(
-                    _isPlaying ? Icons.pause : Icons.play_circle,
-                    size: 60,
-                  ),
+                  icon: _isPlaying == false
+                      ? Icon(
+                          _icons[0],
+                          size: 60,
+                        )
+                      : Icon(
+                          _icons[1],
+                          size: 60,
+                        ),
                   color: Colors.white,
                   onPressed: () async {
                     if (_isPlaying) {
