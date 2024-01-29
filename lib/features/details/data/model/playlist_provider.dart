@@ -1,4 +1,4 @@
-import 'package:audio_players/features/home/data/model/song.dart';
+import 'package:audio_players/features/details/data/model/song.dart';
 
 class PlaylistProvider {
   //playlist of songs
@@ -8,7 +8,7 @@ class PlaylistProvider {
         artistName: 'Elley Duhe',
         albumImagePath: 'assets/cover/cover.jpg',
         audioPath: 'audio/song.mp3'),
-        Song(
+    Song(
         songName: 'Look at me!',
         artistName: 'XXXTENTATION',
         albumImagePath: 'assets/cover/cover1.png',
@@ -24,4 +24,22 @@ class PlaylistProvider {
         albumImagePath: 'assets/cover/cover3.png',
         audioPath: 'audio/song.mp3'),
   ];
+
+  //current song playing index
+  int? _currentSongIndex;
+
+  /* 
+  
+  G E T T E R S
+
+  */
+
+  List<Song> get playlist => _playlist;
+  int? get currentSongIndex => _currentSongIndex;
+
+  /* 
+  
+  S E T T E R S
+
+  */
 }
