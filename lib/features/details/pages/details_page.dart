@@ -2,14 +2,14 @@ import 'package:audio_players/features/details/widgets/app_bar.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-class DetalsPage extends StatefulWidget {
-  const DetalsPage({super.key});
+class DetailsPage extends StatefulWidget {
+  const DetailsPage({super.key});
 
   @override
-  State<DetalsPage> createState() => _DetalsPageState();
+  State<DetailsPage> createState() => _DetalsPageState();
 }
 
-class _DetalsPageState extends State<DetalsPage> {
+class _DetalsPageState extends State<DetailsPage> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
   Duration _duration = Duration.zero;
