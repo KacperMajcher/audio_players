@@ -1,6 +1,7 @@
 import 'package:audio_players/features/details/data/model/song.dart';
+import 'package:flutter/material.dart';
 
-class PlaylistProvider {
+class PlaylistProvider extends ChangeNotifier {
   //playlist of songs
   final List<Song> _playlist = [
     Song(
