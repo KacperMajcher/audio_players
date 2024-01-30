@@ -1,6 +1,8 @@
+import 'package:audio_players/features/details/data/model/playlist_provider.dart';
 import 'package:audio_players/features/details/widgets/app_bar.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DetailsPage extends StatefulWidget {
   const DetailsPage({super.key});
@@ -14,6 +16,7 @@ class _DetalsPageState extends State<DetailsPage> {
   bool _isPlaying = false;
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
+  late String audioPath;
   final List<IconData> _icons = [
     Icons.play_circle,
     Icons.pause_circle,
@@ -23,7 +26,16 @@ class _DetalsPageState extends State<DetailsPage> {
   void initState() {
     super.initState();
 
-    setAudio();
+    // Get the playlist and current song
+    final playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
+    final playlist = playlistProvider.playlist;
+    final currentSong = playlist[playlistProvider.currentSongIndex ?? 0];
+
+    // Set the audio path
+    audioPath = currentSong.audioPath;
+
+    setAudio(audioPath);
 
     //Listen to the states: playing, paused, stopped
     _audioPlayer.onPlayerStateChanged.listen((state) {
@@ -49,136 +61,146 @@ class _DetalsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: const CustomAppBar(),
-      body: SizedBox(
-        child: Column(
-          children: [
-            const SizedBox(height: 45),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              child: Image(
-                image: AssetImage('assets/cover/cover.jpg'),
+    return Consumer<PlaylistProvider>(builder: (context, value, child) {
+      //get playlist
+      final playlist = value.playlist;
+
+      //get current song index
+      final currentSong = playlist[value.currentSongIndex ?? 0];
+
+      //return scaffold UI
+      return Scaffold(
+        backgroundColor: Colors.black,
+        appBar: const CustomAppBar(),
+        body: SizedBox(
+          child: Column(
+            children: [
+              const SizedBox(height: 45),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                child: Image(
+                  image: AssetImage(currentSong.albumImagePath),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          currentSong.songName,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          currentSong.artistName,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                    const Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    ),
+                  ],
+                ),
+              ),
+              Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Middle of the night',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'Elley Duhe',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Slider(
+                      min: 0,
+                      max: _duration.inSeconds.toDouble(),
+                      value: _position.inSeconds.toDouble(),
+                      onChanged: (value) async {
+                        final position = Duration(seconds: value.toInt());
+                        await _audioPlayer.seek(position);
+
+                        //optional: play audio if was paused
+                        await _audioPlayer.resume();
+                      },
+                      activeColor: Colors.white,
+                      inactiveColor: Colors.white.withOpacity(0.3),
+                    ),
                   ),
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.red,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(formatTime(_position),
+                            style: const TextStyle(color: Colors.white)),
+                        Text(formatTime(_duration),
+                            //formatTime(_duration - _position), //reamining time of the song
+                            style: const TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  IconButton(
+                    icon: const Icon(
+                      Icons.skip_previous_rounded,
+                      size: 50,
+                    ),
+                    color: Colors.white,
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: _isPlaying == false
+                        ? Icon(
+                            _icons[0],
+                            size: 60,
+                          )
+                        : Icon(
+                            _icons[1],
+                            size: 60,
+                          ),
+                    color: Colors.white,
+                    onPressed: () async {
+                      if (_isPlaying) {
+                        await _audioPlayer.pause();
+                      } else {
+                        await _audioPlayer.resume();
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.skip_next_rounded,
+                      size: 50,
+                    ),
+                    color: Colors.white,
+                    onPressed: () {},
                   ),
                 ],
               ),
-            ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Slider(
-                    min: 0,
-                    max: _duration.inSeconds.toDouble(),
-                    value: _position.inSeconds.toDouble(),
-                    onChanged: (value) async {
-                      final position = Duration(seconds: value.toInt());
-                      await _audioPlayer.seek(position);
-
-                      //optional: play audio if was paused
-                      await _audioPlayer.resume();
-                    },
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.white.withOpacity(0.3),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(formatTime(_position),
-                          style: const TextStyle(color: Colors.white)),
-                      Text(formatTime(_duration),
-                          //formatTime(_duration - _position), //reamining time of the song
-                          style: const TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                IconButton(
-                  icon: const Icon(
-                    Icons.skip_previous_rounded,
-                    size: 50,
-                  ),
-                  color: Colors.white,
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: _isPlaying == false
-                      ? Icon(
-                          _icons[0],
-                          size: 60,
-                        )
-                      : Icon(
-                          _icons[1],
-                          size: 60,
-                        ),
-                  color: Colors.white,
-                  onPressed: () async {
-                    if (_isPlaying) {
-                      await _audioPlayer.pause();
-                    } else {
-                      await _audioPlayer.resume();
-                    }
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.skip_next_rounded,
-                    size: 50,
-                  ),
-                  color: Colors.white,
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
-  Future setAudio() async {
+  Future setAudio(String audioPath) async {
     //Repeat song when completed
     _audioPlayer.setReleaseMode(ReleaseMode.loop);
 
     //load audio
-    String asset = 'audio/song.mp3';
-    await _audioPlayer.play(AssetSource(asset));
+    await _audioPlayer.play(AssetSource(audioPath));
   }
 
   @override
