@@ -1,6 +1,5 @@
 import 'package:audio_players/features/details/data/model/playlist_provider.dart';
 import 'package:audio_players/features/details/widgets/app_bar.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,10 +11,6 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetalsPageState extends State<DetailsPage> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  bool _isPlaying = false;
-  Duration _duration = Duration.zero;
-  Duration _position = Duration.zero;
   late String audioPath;
   final List<IconData> _icons = [
     Icons.play_circle,
@@ -25,38 +20,6 @@ class _DetalsPageState extends State<DetailsPage> {
   @override
   void initState() {
     super.initState();
-
-    // Get the playlist and current song
-    final playlistProvider =
-        Provider.of<PlaylistProvider>(context, listen: false);
-    final playlist = playlistProvider.playlist;
-    final currentSong = playlist[playlistProvider.currentSongIndex ?? 0];
-
-    // Set the audio path
-    audioPath = currentSong.audioPath;
-
-    setAudio(audioPath);
-
-    //Listen to the states: playing, paused, stopped
-    _audioPlayer.onPlayerStateChanged.listen((state) {
-      setState(() {
-        _isPlaying = state == PlayerState.playing;
-      });
-    });
-
-    //listen to audio duration
-    _audioPlayer.onDurationChanged.listen((newDuration) {
-      setState(() {
-        _duration = newDuration;
-      });
-    });
-
-    //listen to audio position changes
-    _audioPlayer.onPositionChanged.listen((newPosition) {
-      setState(() {
-        _position = newPosition;
-      });
-    });
   }
 
   @override
@@ -128,14 +91,16 @@ class _DetalsPageState extends State<DetailsPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Slider(
                       min: 0,
-                      max: _duration.inSeconds.toDouble(),
-                      value: _position.inSeconds.toDouble(),
-                      onChanged: (value) async {
-                        final position = Duration(seconds: value.toInt());
-                        await _audioPlayer.seek(position);
-
-                        //optional: play audio if was paused
-                        await _audioPlayer.resume();
+                      max: value.totalDuration.inSeconds.toDouble(),
+                      value: value.currentDuration.inSeconds.toDouble(),
+                      onChanged: (double double) {
+                        // during when the user is sliding around
+                      },
+                      onChangeEnd: (double double) {
+                        // sliding has finished, go to that position in song duration
+                        value.seek(Duration(seconds: double.toInt()));
+                        // retume when finishing slide
+                        value.resume();
                       },
                       activeColor: Colors.white,
                       inactiveColor: Colors.white.withOpacity(0.3),
@@ -146,9 +111,9 @@ class _DetalsPageState extends State<DetailsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(formatTime(_position),
+                        Text(formatTime(value.currentDuration),
                             style: const TextStyle(color: Colors.white)),
-                        Text(formatTime(_duration),
+                        Text(formatTime(value.totalDuration),
                             //formatTime(_duration - _position), //reamining time of the song
                             style: const TextStyle(color: Colors.white)),
                       ],
@@ -160,41 +125,29 @@ class _DetalsPageState extends State<DetailsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
+                  // IconButton(
+                  //   icon: const Icon(
+                  //     Icons.skip_previous_rounded,
+                  //     size: 50,
+                  //   ),
+                  //   color: Colors.white,
+                  //   onPressed: () => value.playPreviousSong(),
+                  // ),
                   IconButton(
-                    icon: const Icon(
-                      Icons.skip_previous_rounded,
-                      size: 50,
-                    ),
-                    color: Colors.white,
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: _isPlaying == false
-                        ? Icon(
-                            _icons[0],
-                            size: 60,
-                          )
-                        : Icon(
-                            _icons[1],
-                            size: 60,
-                          ),
-                    color: Colors.white,
-                    onPressed: () async {
-                      if (_isPlaying) {
-                        await _audioPlayer.pause();
-                      } else {
-                        await _audioPlayer.resume();
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.skip_next_rounded,
-                      size: 50,
-                    ),
-                    color: Colors.white,
-                    onPressed: () {},
-                  ),
+                      icon: Icon(
+                        value.isPlaying ? _icons[1] : _icons[0],
+                        size: 60,
+                      ),
+                      color: Colors.white,
+                      onPressed: () => value.pauseOrResume()),
+                  // IconButton(
+                  //   icon: const Icon(
+                  //     Icons.skip_next_rounded,
+                  //     size: 50,
+                  //   ),
+                  //   color: Colors.white,
+                  //   onPressed: () => value.playNextSong(),
+                  // ),
                 ],
               ),
             ],
@@ -202,19 +155,5 @@ class _DetalsPageState extends State<DetailsPage> {
         ),
       );
     });
-  }
-
-  Future setAudio(String audioPath) async {
-    //Repeat song when completed
-    _audioPlayer.setReleaseMode(ReleaseMode.loop);
-
-    //load audio
-    await _audioPlayer.play(AssetSource(audioPath));
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    super.dispose();
   }
 }
