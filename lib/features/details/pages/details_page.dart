@@ -62,6 +62,15 @@ class _DetalsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<PlaylistProvider>(builder: (context, value, child) {
+      //convert duration into min:sec
+      String formatTime(Duration duration) {
+        String twoDigits =
+            duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+        String formattedTime = '${duration.inMinutes}:$twoDigits';
+
+        return formattedTime;
+      }
+
       //get playlist
       final playlist = value.playlist;
 
@@ -208,18 +217,4 @@ class _DetalsPageState extends State<DetailsPage> {
     _audioPlayer.dispose();
     super.dispose();
   }
-}
-
-String formatTime(Duration duration) {
-  String twoDigits(int n) => n.toString().padLeft(2, '0');
-
-  final hours = twoDigits(duration.inHours);
-  final minutes = twoDigits(duration.inMinutes.remainder(60));
-  final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-  return [
-    if (duration.inHours > 0) hours,
-    minutes,
-    seconds,
-  ].join(':');
 }
