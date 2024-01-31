@@ -125,14 +125,14 @@ class _DetalsPageState extends State<DetailsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  // IconButton(
-                  //   icon: const Icon(
-                  //     Icons.skip_previous_rounded,
-                  //     size: 50,
-                  //   ),
-                  //   color: Colors.white,
-                  //   onPressed: () => value.playPreviousSong(),
-                  // ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.skip_previous_rounded,
+                      size: 50,
+                    ),
+                    color: Colors.white,
+                    onPressed: () => value.playPreviousSong(),
+                  ),
                   IconButton(
                       icon: Icon(
                         value.isPlaying ? _icons[1] : _icons[0],

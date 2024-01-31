@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class PlaylistProvider extends ChangeNotifier {
   //playlist of songs
-    final List<Song> _playlist = [
+  final List<Song> _playlist = [
     Song(
         songName: 'Middle of the night',
         artistName: 'Elley Duhe',
@@ -87,6 +87,22 @@ class PlaylistProvider extends ChangeNotifier {
   // seek to a specyfic position in the current song
   void seek(Duration position) async {
     await _audioPlayer.seek(position);
+  }
+
+  // play previous song
+  void playPreviousSong() async {
+    // if more than 2 seconds have passed, restart the current song
+    if (_currentDuration.inSeconds > 2) {
+      seek(const Duration(seconds: 0)); // seek to the beginning
+    } else {
+      // if it's within first 2 second of the song, go to previous song
+      if (_currentSongIndex! > 0) {
+        currentSongIndex = _currentSongIndex! - 1;
+      } else {
+        //if it is the first song, loop back to last song
+        currentSongIndex = _playlist.length - 1;
+      }
+    }
   }
 
   // listen to duration
