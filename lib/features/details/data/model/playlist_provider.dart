@@ -4,26 +4,26 @@ import 'package:flutter/material.dart';
 
 class PlaylistProvider extends ChangeNotifier {
   //playlist of songs
-  final List<Song> _playlist = [
+    final List<Song> _playlist = [
     Song(
         songName: 'Middle of the night',
         artistName: 'Elley Duhe',
-        albumImagePath: 'assets/cover/cover.jpg',
+        albumImagePath: 'assets/cover/MiddleOfTheNightCover.jpg',
         audioPath: 'audio/MiddleOfTheNight.mp3'),
     Song(
         songName: 'Look at me!',
         artistName: 'XXXTENTATION',
-        albumImagePath: 'assets/cover/cover1.png',
+        albumImagePath: 'assets/cover/LookAtMeCover.jpg',
         audioPath: 'audio/LookAtMe.mp3'),
     Song(
         songName: 'Skin and Bones',
         artistName: 'David Kushner',
-        albumImagePath: 'assets/cover/cover2.png',
+        albumImagePath: 'assets/cover/SkinAndBonesCover.jpg',
         audioPath: 'audio/SkinAndBones.mp3'),
     Song(
         songName: 'BILLIE EILISH.',
         artistName: 'Armani White',
-        albumImagePath: 'assets/cover/cover3.png',
+        albumImagePath: 'assets/cover/BillieEilishCover.jpg',
         audioPath: 'audio/BillieEilish.mp3'),
   ];
 
