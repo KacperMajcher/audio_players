@@ -89,6 +89,19 @@ class PlaylistProvider extends ChangeNotifier {
     await _audioPlayer.seek(position);
   }
 
+  // play next song
+  void playNextSong() {
+    if (_currentSongIndex != null) {
+      if (_currentSongIndex! < playlist.length - 1) {
+        // go to the next song if it's not last one
+        currentSongIndex = _currentSongIndex! + 1;
+      } else {
+        // if it's the last song, loop back to the first one
+        currentSongIndex = 0;
+      }
+    }
+  }
+
   // play previous song
   void playPreviousSong() async {
     // if more than 2 seconds have passed, restart the current song
@@ -125,7 +138,7 @@ class PlaylistProvider extends ChangeNotifier {
     });
   }
 
-  void playNextSong() {}
+
 
   /* 
   

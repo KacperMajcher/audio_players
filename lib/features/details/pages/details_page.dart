@@ -140,14 +140,14 @@ class _DetalsPageState extends State<DetailsPage> {
                       ),
                       color: Colors.white,
                       onPressed: () => value.pauseOrResume()),
-                  // IconButton(
-                  //   icon: const Icon(
-                  //     Icons.skip_next_rounded,
-                  //     size: 50,
-                  //   ),
-                  //   color: Colors.white,
-                  //   onPressed: () => value.playNextSong(),
-                  // ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.skip_next_rounded,
+                      size: 50,
+                    ),
+                    color: Colors.white,
+                    onPressed: () => value.playNextSong(),
+                  ),
                 ],
               ),
             ],
